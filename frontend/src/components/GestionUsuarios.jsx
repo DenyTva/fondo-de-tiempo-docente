@@ -1413,7 +1413,7 @@ const initialData = {
         <div ref={listaRef} className="scroll-mt-4" />
         {usuariosFiltrados.length > 0 ? (
           vista === 'lista' ? (
-            // Cuadrícula en vez de <table>: el CSS del módulo POA da estilo a todas las tablas.
+            // Cuadrícula en vez de <table>.
             <div key={`lista-${claveVista}`} className={`${BLOQUE} overflow-hidden`}>
               <div className={`hidden xl:grid ${columnasLista} items-center gap-6 px-5 py-3 bg-azulado-100 text-xs font-medium text-slate-500 [border-bottom:1px_solid_#B8C9E1]`}>
                 <span>Usuario</span>

@@ -6,7 +6,6 @@ from fondos.models import (
     CargaHoraria, InformeFondo, HistorialFondo, MensajeObservacion,
     ObservacionFondo, PerfilUsuario, Materia, AsignacionCarrera
 )
-from poa_document.models import UsuarioPOA
 
 class Command(BaseCommand):
     help = 'Elimina TODOS los datos del sistema (Usuarios, Fondos, Docentes) para iniciar de cero.'
@@ -46,10 +45,9 @@ class Command(BaseCommand):
                 # Desvincular perfiles antes de borrar docentes para evitar conflictos
                 PerfilUsuario.objects.update(docente=None) 
                 Docente.objects.all().delete()
-                # Asignaciones, perfiles y accesos POA protegen a la carrera (PROTECT)
+                # Asignaciones y perfiles protegen a la carrera (PROTECT)
                 AsignacionCarrera.objects.all().delete()
                 PerfilUsuario.objects.update(carrera=None)
-                UsuarioPOA.objects.update(carrera=None)
                 Carrera.objects.all().delete()
                 
                 # 5. Eliminar Usuarios

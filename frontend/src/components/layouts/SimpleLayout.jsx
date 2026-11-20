@@ -1,11 +1,9 @@
 import { Outlet, Link } from 'react-router-dom';
 import ThemeToggle from '../ThemeToggle';
-import useSinElevacionPoa from '../../utils/useSinElevacionPoa';
 import useModoClaro from '../../utils/useModoClaro';
 
 // soloClaro: la página va con el estilo de Fondo de Tiempo (solo modo claro, sin selector de tema).
 const SimpleLayout = ({ theme, setTheme, soloClaro = false }) => {
-    useSinElevacionPoa();
     useModoClaro(soloClaro);
 
     return (

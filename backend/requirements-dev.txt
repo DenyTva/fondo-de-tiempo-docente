@@ -1,0 +1,4 @@
+-r requirements.txt
+
+# Solo para las pruebas: leer el texto de los PDF generados.
+pypdf==5.1.0

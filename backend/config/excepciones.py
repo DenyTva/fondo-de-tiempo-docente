@@ -4,7 +4,7 @@ Los mensajes estándar de DRF ya salen en español por LANGUAGE_CODE. Aquí se c
 los que no: el 404 por defecto de Django/DRF (get_object_or_404 dice "No <Modelo>
 matches the given query.", en inglés y con el nombre interno del modelo), el detalle del
 JSON mal formado (lo arma la librería json de Python) y la lista interna en inglés de
-simplejwt. Un 404 con mensaje propio de la vista (POA, "Página inválida") se conserva.
+simplejwt. Un 404 con mensaje propio de la vista ("Página inválida") se conserva.
 """
 import re
 

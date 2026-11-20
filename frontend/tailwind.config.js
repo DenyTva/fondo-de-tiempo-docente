@@ -52,24 +52,9 @@ export default {
           800: '#92400E',
           900: '#78350F',
         },
-        // Colores semánticos de botones del módulo POA
-        'btn-nuevo': '#059669',
-        'btn-nuevo-dark': '#047857',
-        'btn-guardar': '#0ea5a4',
-        'btn-guardar-dark': '#0f766e',
-        'btn-cancelar': '#f3f4f6',
-        'btn-cancelar-dark': '#e5e7eb',
-        'btn-editar': '#f59e0b',
-        'btn-editar-dark': '#d97706',
-        'btn-eliminar': '#ef4444',
-        'btn-eliminar-dark': '#dc2626',
-        'btn-volver': '#bbc7dfff',
-        'btn-volver-dark': '#d1d5db',
-        'btn-info': '#10b981',
-        'btn-info-dark': '#059669',
       },
       // Tipografía: los valores son variables CSS definidas en src/index.css (sección
-      // "Tipografía"). El sistema usa la escala nueva y el POA conserva la de Tailwind.
+      // "Tipografía").
       fontFamily: {
         'sans': ['var(--fuente-sans)'],
       },

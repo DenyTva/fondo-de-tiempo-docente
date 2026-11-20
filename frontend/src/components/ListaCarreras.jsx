@@ -1485,7 +1485,7 @@ function ListaCarreras() {
         <div ref={listaRef} className="scroll-mt-4" />
         {carrerasFiltradas.length > 0 ? (
           vista === 'lista' ? (
-            // Cuadrícula en vez de <table>: el CSS del módulo POA da estilo a todas las tablas.
+            // Cuadrícula en vez de <table>.
             <div key={`lista-${claveVista}`} className={`${BLOQUE} overflow-hidden`}>
               <div className="hidden lg:grid lg:grid-cols-[minmax(0,1.6fr)_7rem_minmax(0,1.4fr)_8rem_8rem] items-center gap-6 px-5 py-3 bg-azulado-100 text-xs font-medium text-slate-500 [border-bottom:1px_solid_#B8C9E1]">
                 <span>Carrera</span>

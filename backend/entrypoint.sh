@@ -54,8 +54,8 @@ esac
 echo "Recolectando archivos estáticos..."
 python manage.py collectstatic --noinput
 
-# --timeout 120: el reporte general del POA (pandas + reportlab) puede tardar
-# más que los 30 s por defecto de gunicorn.
+# --timeout 120: los reportes en PDF del sistema pueden tardar más que los 30 s
+# por defecto de gunicorn.
 echo "Arrancando gunicorn..."
 exec gunicorn config.wsgi:application \
     --bind 0.0.0.0:8000 \

@@ -15,7 +15,7 @@ body {
 }
 
 /* ============================================================
-   Tipografía (todo el sistema menos el POA). Única fuente de
+   Tipografía del sistema. Única fuente de
    verdad: tailwind.config.js lee estas variables (text-*,
    font-bold, font-sans) y las reglas de abajo fijan la base.
    - Inter (Google Fonts, index.html) con respaldo system-ui.
@@ -49,62 +49,25 @@ body {
   --peso-black: 600;
 }
 
-/* El POA (y sus modales, que se abren fuera de .poa-app) conserva la escala de Tailwind y Poppins. */
-body:has(.poa-app) {
-  --fuente-sans: ui-sans-serif, system-ui, -apple-system;
-  --texto-xs: 0.75rem;
-  --interlineado-xs: 1rem;
-  --texto-sm: 0.875rem;
-  --interlineado-sm: 1.25rem;
-  --texto-base: 1rem;
-  --interlineado-base: 1.5rem;
-  --texto-lg: 1.125rem;
-  --interlineado-lg: 1.75rem;
-  --texto-xl: 1.25rem;
-  --interlineado-xl: 1.75rem;
-  --texto-2xl: 1.5rem;
-  --interlineado-2xl: 2rem;
-  --texto-3xl: 1.875rem;
-  --interlineado-3xl: 2.25rem;
-  --peso-bold: 700;
-  --peso-extrabold: 800;
-  --peso-black: 900;
-}
-
 html body {
   font-family: var(--fuente-sans);
   font-size: var(--texto-sm);
   line-height: 1.5;
 }
 
-html body:has(.poa-app) {
-  font-family: 'Poppins', sans-serif;
-  font-size: 1rem;
-}
-
 /* Títulos de página y de los contenedores en negrita (700), aunque lleven otra clase de peso. */
-body:not(:has(.poa-app)) :is(h1, h2, h3, h4, h5, h6) {
+body :is(h1, h2, h3, h4, h5, h6) {
   font-weight: 700;
   line-height: 1.25;
 }
 
-body:not(:has(.poa-app)) button {
+body button {
   font-weight: 500;
-}
-
-/* El CSS del POA (cargado en toda la app) hace saltar y sombrear todos los botones al
-   pasar el cursor. Fuera del POA se anula: los botones conservan solo sus propias clases
-   (sombras y transformaciones de Tailwind, que se recomponen con sus variables). */
-body:not(:has(.poa-app)) button:not(:disabled):hover,
-body:not(:has(.poa-app)) button:active {
-  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow, 0 0 #0000);
-  filter: none;
 }
 
 /* En el celular los campos van a 16 px (evita el zoom automático de iOS al enfocarlos). */
 @media (max-width: 639px) {
-  body:not(:has(.poa-app)) :is(input, select, textarea) {
+  body :is(input, select, textarea) {
     font-size: 16px;
   }
 }
@@ -328,7 +291,7 @@ html.dark [class*="border-red-500"] {
 .slide-info-from-right {
   animation: slideInfoFromRight 220ms ease-out forwards;
 }
-/* Chat Fondo de Tiempo: apariencia tipo mensajeria POA, sin busqueda ni acciones avanzadas. */
+/* Chat Fondo de Tiempo: apariencia de mensajería, sin búsqueda ni acciones avanzadas. */
 /* Botón y cabecera con el azul del sidebar (blue-900 → blue-950); el cuerpo con el
    blanco azulado del módulo, para que el chat se distinga de la página. */
 .ft-chat-button {
@@ -1632,17 +1595,7 @@ html[data-solo-lectura="true"] [data-escritura] {
   display: none !important;
 }
 
-/* Fondo de Tiempo, Carreras y Usuarios: anula la regla global del módulo POA que eleva
-   todos los botones (button:hover / button:active). Se vuelve a la composición de
-   Tailwind para que las clases hover:scale-*, hover:shadow-* de cada botón sigan valiendo. */
-html.sin-elevacion-poa button:not(:disabled):hover,
-html.sin-elevacion-poa button:active {
-  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow, 0 0 #0000);
-  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
-}
-
-/* Toasts del sistema (fuera del POA): salen a la altura del bloque "Total fondos"
+/* Toasts del sistema: salen a la altura del bloque "Total fondos"
    del dashboard (padding superior del panel; en el celular, debajo de la barra azul). */
 .toaster-fondo {
   top: 72px !important;

@@ -580,22 +580,12 @@ def datos_registrados_usuario(user):
     Si hay alguno, el usuario no se puede eliminar (solo desactivar) y su
     identidad (usuario, nombre y C.I.) queda fija.
     """
-    from poa_document.models import (
-        HistorialDocumentoPOA, ObservacionDocumentoPOA, OrdenCompraPOA, VersionDocumentoPOA,
-    )
-
     docente = docente_del_usuario(user)
     cargas = Q(creado_por=user) | (Q(docente=docente) if docente else Q())
     dependencias = [
         ('fondos', 'Fondos de tiempo', FondoTiempo.objects.filter(docente=docente).count() if docente else 0),
         ('informes', 'Informes', InformeFondo.objects.filter(Q(elaborado_por=user) | Q(evaluado_por=user)).count()),
         ('cargas_horarias', 'Cargas horarias', CargaHoraria.objects.filter(cargas).count()),
-        ('historial_poa', 'Historial POA', sum((
-            HistorialDocumentoPOA.objects.filter(usuario=user).count(),
-            VersionDocumentoPOA.objects.filter(creado_por=user).count(),
-            ObservacionDocumentoPOA.objects.filter(creado_por=user).count(),
-            OrdenCompraPOA.objects.filter(creado_por=user).count(),
-        ))),
         # Huella que el sistema ya protegía (no repudio).
         ('historial_fondos', 'Historial de fondos', HistorialFondo.objects.filter(usuario=user).count()),
         ('mensajes', 'Mensajes en observaciones', MensajeObservacion.objects.filter(autor=user).count()),

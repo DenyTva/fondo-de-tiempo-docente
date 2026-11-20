@@ -377,7 +377,7 @@ const MateriaList = () => {
                 <div ref={listaRef} className="scroll-mt-4" />
                 {materiasFiltradas.length > 0 ? (
                     vista === 'lista' ? (
-                        // Cuadrícula en vez de <table>: el CSS del módulo POA da estilo a todas las tablas.
+                        // Cuadrícula en vez de <table>.
                         <div key={`lista-${claveVista}`} className={`${BLOQUE} p-2 sm:p-3`}>
                             <div className={`hidden xl:grid ${columnasLista} gap-4 px-3 pt-3 pb-3 mb-2 text-xs font-semibold uppercase tracking-wider text-slate-500 [border-bottom:1px_solid_#B8C9E1]`}>
                                 <span>Materia</span>

@@ -1154,7 +1154,7 @@ function DetalleFondo() {
                             </div>
                           </div>
 
-                          {/* Tabla de actividades (cuadrícula: el CSS del POA da estilo a todas las <table>) */}
+                          {/* Tabla de actividades (cuadrícula) */}
                           {detalles.length > 0 ? (
                             <div className="rounded-2xl bg-white ring-1 ring-azulado-300 overflow-hidden">
                               <div className={`hidden lg:grid ${columnasActividades} bg-azulado-50 text-xs font-semibold text-blue-800 [border-bottom:1px_solid_#D2DDEE]`}>

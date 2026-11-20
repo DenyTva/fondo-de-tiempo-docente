@@ -20,11 +20,9 @@ from django.test import override_settings
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from poa_document.models import HistorialDocumentoPOA, DocumentoPOA
-
 from fondos.models import (
     SEMANAS_POR_MES, AsignacionCarrera, Carrera, DatosLaborales, Docente, DocenteCarrera,
-    FacultadCatalogo, FondoTiempo, Materia, PerfilUsuario,
+    FacultadCatalogo, FondoTiempo, HistorialFondo, Materia, PerfilUsuario,
 )
 from fondos.solo_lectura import MENSAJE_ROL_SOLO_LECTURA
 
@@ -77,6 +75,14 @@ class DatosUsuariosMixin:
             'first_name': 'Nombre', 'last_name': 'Apellido',
             'rol': rol, 'carrera': carrera.pk if carrera else None, 'ci': ci, **extra,
         }
+
+    def _con_historial_fondo(self, usuario):
+        docente = Docente.objects.create(
+            nombres='Historial', apellido_paterno='Prueba',
+            datos_laborales=DatosLaborales.objects.create(ci=f'HIST-{usuario.pk}'),
+        )
+        fondo = FondoTiempo.objects.create(docente=docente, carrera=self.carrera, gestion=2026)
+        HistorialFondo.objects.create(fondo_tiempo=fondo, usuario=usuario, tipo_cambio='creacion', descripcion='x')
 
 
 # Los archivos subidos en los tests (p. ej. la resolución del Jefe) no van a la carpeta media real.
@@ -210,13 +216,9 @@ class EliminarYEditarUsuarioTests(UsuariosBaseTestCase):
         self.assertTrue(User.objects.filter(pk=usuario.pk).exists())
         self.assertTrue(AsignacionCarrera.objects.filter(user=usuario).exists())
 
-    def test_eliminar_usuario_con_historial_poa_falla(self):
-        usuario = self.crear_usuario('con_poa', 'docente', carrera=self.carrera)
-        documento = DocumentoPOA.objects.create(
-            gestion=2026, unidad_solicitante=self.carrera, programa='Programa',
-            objetivo_gestion_institucional='Objetivo', fecha_elaboracion=date(2026, 1, 1),
-        )
-        HistorialDocumentoPOA.objects.create(documento=documento, usuario=usuario, tipo_evento='creacion', descripcion='x')
+    def test_eliminar_usuario_con_historial_de_fondo_falla(self):
+        usuario = self.crear_usuario('con_historial', 'docente', carrera=self.carrera)
+        self._con_historial_fondo(usuario)
 
         response = self.client.delete(f'/api/usuarios/{usuario.pk}/')
 
@@ -247,20 +249,13 @@ class EliminarYEditarUsuarioTests(UsuariosBaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
         self.assertEqual(User.objects.get(pk=usuario.pk).username, 'nuevo_nombre')
 
-    def _con_historial_poa(self, usuario):
-        documento, _ = DocumentoPOA.objects.get_or_create(
-            gestion=2026, unidad_solicitante=self.carrera,
-            defaults={'programa': 'Programa', 'objetivo_gestion_institucional': 'Objetivo', 'fecha_elaboracion': date(2026, 1, 1)},
-        )
-        HistorialDocumentoPOA.objects.create(documento=documento, usuario=usuario, tipo_evento='creacion', descripcion='x')
-
     def test_con_datos_la_carrera_no_cambia_en_ningun_rol(self):
         # Antes un Director con datos se podía pasar a otra carrera y su asignación
         # anterior quedaba inactiva (la lista lo mostraba en las dos carreras).
         for rol in ['director', 'iiisyp', 'jefe_estudios']:
             with self.subTest(rol=rol):
                 usuario = self.crear_usuario(f'con_datos_{rol}', rol, carrera=self.carrera, ci=f'CI-{rol}', is_staff=True)
-                self._con_historial_poa(usuario)
+                self._con_historial_fondo(usuario)
 
                 response = self.client.patch(f'/api/usuarios/{usuario.pk}/', {
                     'username': usuario.username, 'ci': f'CI-{rol}',
@@ -274,7 +269,7 @@ class EliminarYEditarUsuarioTests(UsuariosBaseTestCase):
 
     def test_con_datos_la_carrera_tampoco_cambia_por_el_segundo_rol(self):
         usuario = self.crear_usuario('segundo_rol', 'iiisyp', carrera=self.carrera, ci='CI-SEG')
-        self._con_historial_poa(usuario)
+        self._con_historial_fondo(usuario)
 
         response = self.client.patch(f'/api/usuarios/{usuario.pk}/', {
             'asignaciones': [{'rol': 'docente', 'carrera': self.otra_carrera.pk}],
@@ -285,7 +280,7 @@ class EliminarYEditarUsuarioTests(UsuariosBaseTestCase):
 
     def test_con_datos_se_puede_guardar_sin_cambiar_la_carrera(self):
         usuario = self.crear_usuario('misma_carrera', 'director', carrera=self.carrera, ci='CI-MISMA', is_staff=True)
-        self._con_historial_poa(usuario)
+        self._con_historial_fondo(usuario)
 
         response = self.client.patch(f'/api/usuarios/{usuario.pk}/', {
             'email': 'nuevo@uabjb.edu.bo', 'rol': 'director', 'carrera': self.carrera.pk, 'asignaciones': [],
@@ -343,11 +338,7 @@ class CIExistenteYAsignacionesTests(UsuariosBaseTestCase):
 
     def test_director_no_puede_agregar_asignaciones_a_un_usuario_con_datos(self):
         # Sin datos sí puede (ver tests_usuarios_ajustes); con datos, solo el superusuario.
-        documento = DocumentoPOA.objects.create(
-            gestion=2026, unidad_solicitante=self.carrera, programa='Programa',
-            objetivo_gestion_institucional='Objetivo', fecha_elaboracion=date(2026, 1, 1),
-        )
-        HistorialDocumentoPOA.objects.create(documento=documento, usuario=self.existente, tipo_evento='creacion', descripcion='x')
+        self._con_historial_fondo(self.existente)
 
         response = self.client.patch(
             f'/api/usuarios/{self.existente.pk}/',

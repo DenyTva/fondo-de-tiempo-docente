@@ -14,13 +14,6 @@ from django.test import TestCase, override_settings
 from PIL import Image
 
 from fondos.models import Carrera, FacultadCatalogo, PerfilUsuario, _get_image_cipher
-from poa_document.models import (
-    Actividad as ActividadPOA,
-    DocumentoPOA,
-    Evidencia,
-    EvidenciaArchivo,
-    ObjetivoEspecifico,
-)
 
 
 def _imagen(color='red', formato='PNG'):
@@ -152,27 +145,6 @@ class OrganizarMediaTests(MediaTestCase):
         call_command('organizar_media', stdout=io.StringIO(), stderr=io.StringIO())
         self.carrera.refresh_from_db()
         self.assertEqual(self.carrera.logo_carrera.name, nuevo)
-
-    def test_reubica_evidencia_poa_conservando_anio_y_mes(self):
-        documento = DocumentoPOA.objects.create(
-            gestion=2030, unidad_solicitante=self.carrera, programa='Programa',
-            objetivo_gestion_institucional='Objetivo', fecha_elaboracion=date(2030, 1, 1),
-        )
-        objetivo = ObjetivoEspecifico.objects.create(documento=documento, codigo='OE-1', descripcion='Objetivo')
-        actividad = ActividadPOA.objects.create(
-            objetivo=objetivo, codigo='A-1', nombre='Actividad', responsable='Responsable',
-            productos_esperados='Producto', mes_inicio='enero', mes_fin='febrero',
-            indicador_descripcion='Indicador', indicador_linea_base=0, indicador_meta=1,
-        )
-        evidencia = Evidencia.objects.create(actividad=actividad)
-        antiguo = default_storage.save('evidencias/2025/03/foto.png', ContentFile(_imagen()))
-        archivo = EvidenciaArchivo.objects.create(evidencia=evidencia, tipo='imagen', archivo=antiguo)
-
-        call_command('organizar_media', stdout=io.StringIO(), stderr=io.StringIO())
-        archivo.refresh_from_db()
-        self.assertEqual(archivo.archivo.name, 'poa/evidencias/2025/03/foto.png')
-        self.assertTrue(self.existe('poa/evidencias/2025/03/foto.png'))
-        self.assertFalse(self.existe(antiguo))
 
     def test_archivo_inexistente_no_rompe_el_comando(self):
         Carrera.objects.filter(pk=self.carrera.pk).update(logo_carrera='carreras/no_existe.png')

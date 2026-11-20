@@ -619,8 +619,6 @@ class CarreraViewSet(CarreraInactivaSoloLecturaMixin, viewsets.ModelViewSet):
 
     def _build_dependency_counts(self, carrera):
         # Todo lo que apunta a Carrera. Una carrera solo se puede eliminar si todo es 0.
-        from poa_document.models import UsuarioPOA, ProgramaPOA, OrdenCompraPOA
-
         fondos_qs = FondoTiempo.objects.filter(carrera=carrera)
         dependencias = [
             ('materias', 'Materias', Materia.objects.filter(carrera=carrera).count()),
@@ -630,9 +628,6 @@ class CarreraViewSet(CarreraInactivaSoloLecturaMixin, viewsets.ModelViewSet):
             ('asignaciones', 'Asignaciones de usuarios', AsignacionCarrera.objects.filter(carrera=carrera).count()),
             ('perfiles', 'Perfiles de usuario', PerfilUsuario.objects.filter(carrera=carrera).count()),
             ('calendarios', 'Calendarios académicos', CalendarioAcademico.objects.filter(carrera=carrera).count()),
-            ('usuarios_poa', 'Usuarios POA', UsuarioPOA.objects.filter(carrera=carrera).count()),
-            ('programas_poa', 'Programas POA', ProgramaPOA.objects.filter(carrera=carrera).count()),
-            ('ordenes_compra_poa', 'Órdenes de compra POA', OrdenCompraPOA.objects.filter(carrera=carrera).count()),
         ]
         counts = {clave: cantidad for clave, _etiqueta, cantidad in dependencias}
         counts['detalle'] = [
@@ -646,7 +641,7 @@ class CarreraViewSet(CarreraInactivaSoloLecturaMixin, viewsets.ModelViewSet):
         return counts
 
     # Datos académicos: si existen, la identidad de la carrera queda fija porque ya
-    # aparece en documentos. Usuarios, perfiles y POA no la bloquean (sí impiden borrar).
+    # aparece en documentos. Usuarios y perfiles no la bloquean (sí impiden borrar).
     DEPENDENCIAS_ACADEMICAS = {'materias', 'fondos', 'informes', 'docentes_vinculados', 'calendarios'}
 
     @staticmethod
@@ -3161,7 +3156,7 @@ class UsuarioViewSet(CarreraInactivaSoloLecturaMixin, viewsets.ModelViewSet):
     def destroy(self, request, *args, **kwargs):
         """
         BORRADO CONTROLADO DE USUARIO (misma regla que Carrera)
-        - Con datos registrados (fondos, informes, cargas, POA...): no se
+        - Con datos registrados (fondos, informes, cargas...): no se
           elimina, solo se desactiva.
         - Sin datos: se borra el usuario junto con sus asignaciones, su perfil y su
           ficha de docente, sin dejar registros huérfanos.

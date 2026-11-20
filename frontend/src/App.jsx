@@ -6,22 +6,6 @@ import toast from 'react-hot-toast';
 
 // Vistas y Componentes
 import api from './apis/api';
-// Importaciones POA - Usar el layout principal que incluye sidebar/header
-import POAApp from './modules/poa/poa_App';
-import POAHomePage from './modules/poa/pages/POAHomePage';
-import AccesosPOAPage from './modules/poa/pages/AccesosPOAPage';
-import DocumentosPOAPage from './modules/poa/pages/DocumentosPOAPage';
-import DocumentosRevisionPOAPage from './modules/poa/pages/DocumentosRevisionPOAPage';
-import ActividadesPage from './modules/poa/pages/ActividadesPage';
-import EvidenciaPage from './modules/poa/pages/EvidenciaPage';
-import ObjetivosEspecificosPage from './modules/poa/pages/ObjetivosEspecificosPage';
-import CatalogoItems from './modules/poa/pages/CatalogoItems';
-import CatalogosMenu from './modules/poa/pages/CatalogosMenu';
-import IndicadoresPage from './modules/poa/pages/IndicadoresPage';
-import Reportes from './modules/poa/pages/Reportes';
-import PresupuestosPage from './modules/poa/pages/PresupuestosPage';
-import ConsolidadoRequerimientosPage from './modules/poa/pages/ConsolidadoRequerimientosPage';
-import SeguimientoProgramaPage from './modules/poa/pages/SeguimientoProgramaPage';
 import Login from './components/Login';
 import ModuleSelector from './components/ModuleSelector';
 import FondoTiempoLayout from './components/FondoTiempoLayout';
@@ -225,7 +209,7 @@ function App() {
   if (user && user.perfil?.debe_cambiar_password) {
     return (
       <Router>
-        <ToasterSistema isDark={isDark} />
+        <ToasterSistema />
         <Routes>
           <Route path="/cambiar-password" element={<CambiarPassword onPasswordChanged={handleLogin} />} />
           <Route path="*" element={<Navigate to="/cambiar-password" replace />} />
@@ -247,7 +231,7 @@ function App() {
   return (
     <ActiveRoleProvider user={user} setUser={setUser}>
     <Router>
-      <ToasterSistema isDark={isDark} />
+      <ToasterSistema />
       {/* Conexión de tiempo real y avisos del Fondo de Tiempo para el rol activo */}
       {user && <ConexionTiempoReal />}
       {user && <AvisosFondoTiempo />}
@@ -330,24 +314,6 @@ function App() {
 
             <Route path="/carreras" element={<SimpleLayout theme={theme} setTheme={setTheme} soloClaro />}>
               <Route index element={<AnimatedRoute><ListaCarreras /></AnimatedRoute>} />
-            </Route>
-
-            {/* Módulo: POA - Usando el layout con sidebar y header propios */}
-            <Route path="/poa" element={<POAApp user={user} />}>
-              <Route index element={<AnimatedRoute><POAHomePage /></AnimatedRoute>} />
-              <Route path="accesos" element={<AnimatedRoute><AccesosPOAPage /></AnimatedRoute>} />
-              <Route path="documentos" element={<AnimatedRoute><DocumentosPOAPage /></AnimatedRoute>} />
-              <Route path="documentos-revision" element={<AnimatedRoute><DocumentosRevisionPOAPage /></AnimatedRoute>} />
-              <Route path="actividades/:objetivoEspecificoId" element={<AnimatedRoute><ActividadesPage /></AnimatedRoute>} />
-              <Route path="actividades/:actividadId/evidencias" element={<AnimatedRoute><EvidenciaPage /></AnimatedRoute>} />
-              <Route path="objetivos-especificos/:documentId" element={<AnimatedRoute><ObjetivosEspecificosPage /></AnimatedRoute>} />
-              <Route path="catalogos" element={<AnimatedRoute><CatalogosMenu /></AnimatedRoute>} />
-              <Route path="catalogos/items" element={<AnimatedRoute><CatalogoItems /></AnimatedRoute>} />
-              <Route path="catalogos/indicadores" element={<AnimatedRoute><IndicadoresPage /></AnimatedRoute>} />
-              <Route path="reportes" element={<AnimatedRoute><Reportes /></AnimatedRoute>} />
-              <Route path="presupuestos" element={<AnimatedRoute><PresupuestosPage /></AnimatedRoute>} />
-              <Route path="consolidado-requerimientos" element={<AnimatedRoute><ConsolidadoRequerimientosPage /></AnimatedRoute>} />
-              <Route path="seguimiento/programa/:documentId" element={<AnimatedRoute><SeguimientoProgramaPage /></AnimatedRoute>} />
             </Route>
 
             {/* Módulos de Administración y Catálogos: superusuario, o Director / Jefe

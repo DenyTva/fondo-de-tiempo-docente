@@ -22,7 +22,7 @@ export function useTheme() {
     } else {
       document.documentElement.classList.remove('dark');
     }
-    // Sincronizar data-theme para que el CSS del módulo POA también responda
+    // data-theme: lo usan los estilos que dependen del tema (ver useModoClaro).
     document.documentElement.setAttribute('data-theme', effective);
   };
 

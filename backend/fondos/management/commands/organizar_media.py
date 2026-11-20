@@ -5,12 +5,9 @@ Organiza la carpeta MEDIA con la estructura actual del sistema:
   media/
   ├── carreras/carrera_<id>/logo.<ext>
   ├── usuarios/usuario_<id>/foto_perfil.<ext>
-  ├── fondos/
-  │   ├── evidencias_actividades/docente_<id>/gestion_<año>/<categoria>/
-  │   └── informes/docente_<id>/gestion_<año>/imagenes/
-  └── poa/
-      ├── compras/<año>/<mes>/   recepciones/...   entregas/...
-      └── evidencias/<año>/<mes>/
+  └── fondos/
+      ├── evidencias_actividades/docente_<id>/gestion_<año>/<categoria>/
+      └── informes/docente_<id>/gestion_<año>/imagenes/
 
 Hace tres cosas, y se puede ejecutar varias veces sin efectos repetidos:
 
@@ -46,7 +43,6 @@ from fondos.models import (
     _extension_imagen,
     _get_image_cipher,
 )
-from poa_document.models import EvidenciaArchivo
 
 
 # (modelo, campo, carpeta nueva). Un archivo que ya está bajo su carpeta nueva no se toca.
@@ -56,9 +52,7 @@ CAMPOS_REUBICABLES = [
 ]
 
 # Campos con carpetas por fecha: se conserva el año/mes original.
-PREFIJOS_POR_FECHA = [
-    (EvidenciaArchivo, 'archivo', 'evidencias/', 'poa/evidencias/'),
-]
+PREFIJOS_POR_FECHA = []
 
 
 class Command(BaseCommand):

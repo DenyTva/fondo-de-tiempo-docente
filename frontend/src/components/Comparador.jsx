@@ -102,7 +102,7 @@ function TablaDiferencias({ anterior, posterior }) {
         Horas por año de cada unidad del Art. 12 y su porcentaje sobre las horas efectivas.
       </p>
 
-      {/* Cuadrícula en vez de <table>: el CSS del módulo POA da estilo a todas las tablas. */}
+      {/* Cuadrícula en vez de <table>. */}
       <div className={`hidden md:grid ${columnas} gap-4 mt-5 px-3 pb-3 text-xs font-semibold uppercase tracking-wider text-slate-500 [border-bottom:1px_solid_#B8C9E1]`}>
         <span>Unidad</span>
         <span>Gestión {anterior.gestion}</span>

@@ -33,15 +33,15 @@ test('en modo solo lectura rechaza escrituras como un 403 del backend', async ()
   setCarreraSoloLectura(true);
   for (const method of ['post', 'put', 'patch', 'delete']) {
     await assert.rejects(
-      bloquearEscrituraSiSoloLectura({ method, url: '/api/poa/programas/' }),
+      bloquearEscrituraSiSoloLectura({ method, url: '/fondos-tiempo/1/' }),
       (error) => error.response.status === 403 && error.response.data.detail === MENSAJE_CARRERA_INACTIVA,
     );
   }
 });
 
-test('en modo solo lectura permite sesión, contraseña, foto y chat', () => {
+test('en modo solo lectura permite sesión, contraseña y foto', () => {
   setCarreraSoloLectura(true);
-  for (const url of ['/token/refresh/', '/auth/cambiar-password-inicial/', '/perfil/foto/', '/api/poa/mensajes-chat/']) {
+  for (const url of ['/token/refresh/', '/auth/cambiar-password-inicial/', '/perfil/foto/']) {
     const config = { method: 'post', url };
     assert.equal(bloquearEscrituraSiSoloLectura(config), config, url);
   }

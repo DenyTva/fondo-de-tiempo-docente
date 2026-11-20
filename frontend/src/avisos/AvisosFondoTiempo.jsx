@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import api from '../apis/api';
 import { useActiveRole } from '../contexts/activeRole';
 import useConsultaConRespaldo, { useMensajes } from '../tiempoReal/useTiempoReal';
@@ -20,14 +20,13 @@ const MAXIMO_A_LA_VEZ = 3;
  *
  * Cada aviso sale una sola vez por usuario y rol, en cualquier pantalla o pestaña:
  * antes de mostrarlo se reclama en el servidor (POST novedades/vistos/) y solo se
- * muestran los que el servidor devuelve como recién vistos. No muestra nada dentro del POA.
+ * muestran los que el servidor devuelve como recién vistos.
  */
 export default function AvisosFondoTiempo() {
   const { effectiveUser, activeAssignment, roleSelectionRequired } = useActiveRole();
   const rolActivo = `${effectiveUser?.id}_${activeAssignment?.id ?? 'base'}`;
-  const { pathname } = useLocation();
   const navigate = useNavigate();
-  const activo = Boolean(effectiveUser?.id) && !roleSelectionRequired && !pathname.startsWith('/poa');
+  const activo = Boolean(effectiveUser?.id) && !roleSelectionRequired;
 
   // Pedidos ya enviados en esta pestaña (para no reclamar dos veces el mismo).
   const pedidosRef = useRef(new Set());
@@ -81,7 +80,7 @@ export default function AvisosFondoTiempo() {
     }
   }, [activo, reclamarYMostrar]);
 
-  // Al entrar, al salir del POA y al cambiar de usuario o de rol activo (lo pedido en
+  // Al entrar y al cambiar de usuario o de rol activo (lo pedido en
   // otro rol no cuenta: allí puede ser otro aviso).
   useEffect(() => {
     pedidosRef.current = new Set();
@@ -92,8 +91,7 @@ export default function AvisosFondoTiempo() {
 
   useConsultaConRespaldo(consultar, CONSULTA_MS, activo);
 
-  // Por el socket. Dentro del POA se ignoran: siguen sin ver y la consulta de
-  // entrada los trae al volver.
+  // Por el socket.
   useMensajes('aviso', ({ aviso }) => {
     if (activo && aviso) reclamarYMostrar([aviso]);
   });

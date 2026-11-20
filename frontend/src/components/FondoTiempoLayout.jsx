@@ -4,7 +4,6 @@ import Sidebar from './Sidebar';
 import { useActiveRole } from '../contexts/activeRole';
 import AvisoCarreraInactiva from './common/AvisoCarreraInactiva';
 import AvisoFichaDocentePendiente from './common/AvisoFichaDocentePendiente';
-import useSinElevacionPoa from '../utils/useSinElevacionPoa';
 import useModoClaro from '../utils/useModoClaro';
 
 const FondoTiempoLayout = ({ 
@@ -21,7 +20,6 @@ const FondoTiempoLayout = ({
         hasMultipleAssignments,
     } = useActiveRole();
     const location = useLocation();
-    useSinElevacionPoa();
 
     // En pantallas menores a lg el sidebar es un menú deslizable que tapa el contenido.
     const [esMovil, setEsMovil] = useState(() => window.matchMedia('(max-width: 1023px)').matches);

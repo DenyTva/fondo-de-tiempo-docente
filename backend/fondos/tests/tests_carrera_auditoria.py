@@ -4,7 +4,7 @@
 - Si la carrera tiene datos académicos, sus campos de identidad no se pueden cambiar.
 - Crear una carrera exige logo también en el backend.
 - Una carrera desactivada es de solo lectura para todos, incluido el
-  superusuario (en el módulo de fondos; el POA no es de este proyecto). La
+  superusuario. La
   única excepción es que el superusuario edite la carrera para reactivarla.
 - En el admin de Django solo el superusuario agrega y elimina carreras.
 """
@@ -20,8 +20,6 @@ from django.test import RequestFactory, override_settings
 from PIL import Image
 from rest_framework import status
 from rest_framework.test import APITestCase
-
-from poa_document.models import OrdenCompraPOA, ProgramaPOA, UsuarioPOA
 
 from fondos.models import (
     AsignacionCarrera, CalendarioAcademico, Carrera, DatosLaborales, Docente, DocenteCarrera,
@@ -107,16 +105,6 @@ class EliminarCarreraTests(CarreraBaseTestCase):
                 fecha_inicio_presentacion_proyectos=date(2026, 2, 1),
                 fecha_limite_presentacion_proyectos=date(2026, 2, 28),
             )
-        elif clave == 'usuarios_poa':
-            usuario = User.objects.create_user(f'poa_{carrera.pk}', password='x')
-            UsuarioPOA.objects.create(user=usuario, carrera=carrera, rol='elaborador')
-        elif clave == 'programas_poa':
-            ProgramaPOA.objects.create(carrera=carrera, nombre='Programa de prueba')
-        elif clave == 'ordenes_compra_poa':
-            OrdenCompraPOA.objects.create(
-                carrera=carrera, gestion=2026, numero='OC-1', proveedor='Proveedor', fecha=date(2026, 3, 1),
-                creado_por=self.superuser,
-            )
         else:
             raise AssertionError(f'Dependencia desconocida: {clave}')
 
@@ -131,7 +119,7 @@ class EliminarCarreraTests(CarreraBaseTestCase):
     def test_borrar_carrera_con_cada_tipo_de_dependencia_falla(self):
         dependencias = [
             'materias', 'fondos', 'informes', 'docentes_vinculados', 'asignaciones', 'perfiles',
-            'calendarios', 'usuarios_poa', 'programas_poa', 'ordenes_compra_poa',
+            'calendarios',
         ]
         for clave in dependencias:
             with self.subTest(dependencia=clave):
@@ -149,8 +137,6 @@ class EliminarCarreraTests(CarreraBaseTestCase):
 
     def test_la_base_de_datos_protege_la_carrera_de_asignaciones_y_perfiles(self):
         # Antes eran SET_NULL: borrar la carrera dejaba esos registros huérfanos.
-        # (UsuarioPOA sigue en SET_NULL porque el POA no es de este proyecto; la
-        # API igual impide borrar la carrera, ver el test anterior.)
         for clave in ['asignaciones', 'perfiles']:
             with self.subTest(dependencia=clave):
                 carrera = self.crear_carrera()
@@ -237,11 +223,10 @@ class CamposIdentidadTests(CarreraBaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_datos_no_academicos_no_bloquean_la_identidad(self):
-        # Usuarios asignados, perfiles y POA no fijan la identidad (sí impiden borrar).
+        # Usuarios asignados y perfiles no fijan la identidad (sí impiden borrar).
         carrera = self.crear_carrera()
         usuario = User.objects.create_user('jefe_no_academico', password='x')
         AsignacionCarrera.objects.create(user=usuario, carrera=carrera, rol='jefe_estudios')
-        ProgramaPOA.objects.create(carrera=carrera, nombre='Programa')
 
         response = self.client.patch(f'/api/carreras/{carrera.pk}/', {'nombre': 'Nombre corregido'}, format='json')
 

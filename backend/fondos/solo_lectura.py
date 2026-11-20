@@ -11,8 +11,7 @@ toca una carrera inactiva:
 La única excepción es que el superusuario edite la carrera para reactivarla
 (ver CarreraViewSet.permite_escritura_en_carrera_inactiva).
 
-Lo usan las vistas de fondos (fondos/views.py) y las del POA
-(poa_document/api/views.py).
+Lo usan las vistas de fondos (fondos/views.py).
 """
 import json
 
@@ -25,14 +24,11 @@ from .models import Carrera
 MENSAJE_CARRERA_INACTIVA = 'La carrera está inactiva: sus datos son de solo lectura.'
 MENSAJE_ROL_SOLO_LECTURA = 'El Instituto (IIISyP) solo tiene acceso de lectura.'
 
-# Atributos por los que un objeto llega a su carrera, en orden de preferencia.
-# Cubre fondos (fondo, calendario, carga horaria, materia) y POA (documento,
-# objetivo, actividad, orden de compra, recepción, evidencia).
+# Atributos por los que un objeto llega a su carrera, en orden de preferencia:
+# fondo, calendario, carga horaria y materia.
 RUTAS_A_CARRERA = (
-    'carrera', 'unidad_solicitante',
+    'carrera',
     'fondo_tiempo', 'fondo', 'calendario_academico', 'calendario', 'carga_horaria', 'materia',
-    'documento', 'objetivo', 'actividad', 'evidencia',
-    'orden', 'recepcion', 'detalle_recepcion', 'detalle_orden',
 )
 
 

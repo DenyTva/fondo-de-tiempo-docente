@@ -513,7 +513,7 @@ function ListaFondos() {
           Ningún fondo coincide con la búsqueda.
         </div>
       ) : vista === 'lista' ? (
-        // Cuadrícula en vez de <table>: el CSS del módulo POA da estilo a todas las tablas.
+        // Cuadrícula en vez de <table>.
         // En escritorio se ve como tabla; en el celular cada fondo es un bloque apilado.
         // Columnas con mínimo: a 1280 px con el sidebar abierto se achican hasta su mínimo y lo
         // largo se corta con "…" (texto completo al pasar el cursor); en pantallas anchas

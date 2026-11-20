@@ -219,7 +219,7 @@ const AsignarMateriaOtraCarrera = ({ mostrarLista = false, filtro = '', modalAbi
             : 'Ninguna materia asignada coincide con la búsqueda.'}
         </div>
       ) : (
-        // Cuadrícula en vez de <table>: el CSS del módulo POA da estilo a todas las tablas.
+        // Cuadrícula en vez de <table>.
         <div className={`${BLOQUE} p-2 sm:p-3`}>
           <div className={`hidden lg:grid ${COLUMNAS} gap-4 px-3 pt-3 pb-3 mb-2 text-xs font-semibold uppercase tracking-wider text-slate-500 [border-bottom:1px_solid_#B8C9E1]`}>
             <span>Docente</span>
